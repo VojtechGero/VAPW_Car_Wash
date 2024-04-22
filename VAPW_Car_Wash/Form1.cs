@@ -2,12 +2,15 @@ namespace VAPW_Car_Wash;
 
 public partial class Form1 : Form
 {
-    WashStyle style=WashStyle.Basic;
+    WashStyle style = WashStyle.Basic;
+    Gero_CarWash wash = new Gero_CarWash();
+    bool hadleEvents;
     public Form1()
     {
         InitializeComponent();
     }
-    bool hadleEvents;
+
+
     private void KillAll()
     {
         FullButton.Checked = false;
@@ -34,5 +37,12 @@ public partial class Form1 : Form
         KillAll();
         QuickButton.Checked = true;
         style = WashStyle.Quick;
+    }
+
+    private void CarHereButton_Click(object sender, EventArgs e)
+    {
+        wash.ChooseStyle(style);
+        wash.CarReady();
+        pictureBox1.Visible = true;
     }
 }

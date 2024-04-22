@@ -125,7 +125,7 @@ public class Gero_CarWash : IDisposable
         };
     }
 
-    public Gero_CarWash(int time)
+    public Gero_CarWash()
     {
         Running = true;
         _thread.Start(this);

@@ -52,6 +52,7 @@
             CarHereButton.TabIndex = 0;
             CarHereButton.Text = "Drive up";
             CarHereButton.UseVisualStyleBackColor = true;
+            CarHereButton.Click += CarHereButton_Click;
             // 
             // FullButton
             // 
