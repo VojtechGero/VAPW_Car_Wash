@@ -15,8 +15,10 @@ public class CarWash : IDisposable
     public Semafor OutputSemafor { get; private set; }
 
     private int WorkingCycleMs=0;
-    public CarWashDTO CarWashState { get { return CarWashState; } private set { var changed = value != CarWashState; CarWashState = value; if (changed) OnCarWashStateChanged?.Invoke(this, CarWashState); } }
-    
+    private CarWashDTO _CarWashState { get; set; }
+    public CarWashDTO CarWashState { get { return _CarWashState; } private set { var changed = value != _CarWashState; _CarWashState = value; if (changed) OnCarWashStateChanged?.Invoke(this, _CarWashState); } }
+
+
     public delegate void ChangedCarWashState(object sender, CarWashDTO CarWashState);
     public event ChangedCarWashState OnCarWashStateChanged;
 
@@ -42,7 +44,6 @@ public class CarWash : IDisposable
         while (carWash.Running)
         {
             Stopwatch timingStopwatch = Stopwatch.StartNew();
-
             processStopwatch.Stop();
             var elapsedTimeSeconds = processStopwatch.Elapsed.TotalSeconds;
             if (elapsedTimeSeconds > 0)

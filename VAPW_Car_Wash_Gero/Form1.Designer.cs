@@ -41,6 +41,7 @@
             InSemafor = new Panel();
             OutSemafor = new Panel();
             panel1 = new Panel();
+            ErrorLabel = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -106,6 +107,7 @@
             CarEntryButton.TabIndex = 5;
             CarEntryButton.Text = "Enter";
             CarEntryButton.UseVisualStyleBackColor = true;
+            CarEntryButton.Click += CarEntryButton_Click;
             // 
             // LeaveButton
             // 
@@ -167,11 +169,23 @@
             panel1.Size = new Size(776, 17);
             panel1.TabIndex = 12;
             // 
+            // ErrorLabel
+            // 
+            ErrorLabel.AutoSize = true;
+            ErrorLabel.Font = new Font("Segoe UI", 12F);
+            ErrorLabel.Location = new Point(353, 20);
+            ErrorLabel.Name = "ErrorLabel";
+            ErrorLabel.Size = new Size(52, 21);
+            ErrorLabel.TabIndex = 13;
+            ErrorLabel.Text = "label2";
+            ErrorLabel.Visible = false;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 409);
+            Controls.Add(ErrorLabel);
             Controls.Add(panel1);
             Controls.Add(OutSemafor);
             Controls.Add(InSemafor);
@@ -187,6 +201,7 @@
             Controls.Add(CarHereButton);
             Name = "Form1";
             Text = "Form1";
+            FormClosed += Form1_FormClosed;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -207,5 +222,6 @@
         private Panel InSemafor;
         private Panel OutSemafor;
         private Panel panel1;
+        private Label ErrorLabel;
     }
 }
