@@ -22,10 +22,10 @@ public class CarWash : IDisposable
     public delegate void ChangedCarWashState(object sender, CarWashDTO CarWashState);
     public event ChangedCarWashState OnCarWashStateChanged;
 
-    private bool Running { get; set; } = false;
-    private bool Washing { get; set; } = false;
-    private bool Open { get; set; } = false;
-    private bool Finished {  get; set; } = false;
+    private bool Running = false;
+    private bool Washing = false;
+    private bool Open = false;
+    private bool Finished = false;
 
     private Thread _thread = new Thread(new ParameterizedThreadStart(ThreadProcedure));
 

@@ -18,7 +18,14 @@ public partial class Form1 : Form
     {
         if(hadleEvents)
         {
-
+            if (CarWashState.InputSemafor == CarWash.Semafor.Green)
+            {
+                InSemafor.BackColor = Color.Green;
+            }
+            else
+            {
+                InSemafor.BackColor= Color.Red;
+            }
         }
     }
 
