@@ -9,7 +9,17 @@ public partial class Form1 : Form
     public Form1()
     {
         InitializeComponent();
+        hadleEvents = true;
         wash = new CarWash();
+        wash.OnCarWashStateChanged += OnChangedCarWashState;
+    }
+
+    private void OnChangedCarWashState(object sender, CarWashDTO CarWashState)
+    {
+        if(hadleEvents)
+        {
+
+        }
     }
 
     private void killError()
@@ -47,10 +57,12 @@ public partial class Form1 : Form
     private void CarHereButton_Click(object sender, EventArgs e)
     {
         killError();
-        wash.ChooseStyle(style);
-        wash.CarReady();
+        this.Invoke(new Action(() =>
+        {
+            wash.ChooseStyle(style);
+            wash.CarReady();
+        }));
         pictureBox1.Visible = true;
-
     }
 
     private void CarEntryButton_Click(object sender, EventArgs e)
@@ -58,23 +70,23 @@ public partial class Form1 : Form
         killError();
         try
         {
-            wash.CarIn();
+            this.Invoke(new Action(() =>
+            {
+                wash.CarIn();
+            }));
         }
         catch (InvalidOperationException ex)
         {
             ErrorLabel.Visible = true;
             ErrorLabel.Text = ex.Message;
         }
-
-    }
-
-    private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-    {
-        wash.Dispose();
     }
 
     private void Form1_FormClosed(object sender, FormClosedEventArgs e)
     {
-        wash?.Dispose();
+        this.Invoke( new Action(() =>
+        {
+            wash?.Dispose();
+        }));
     }
 }

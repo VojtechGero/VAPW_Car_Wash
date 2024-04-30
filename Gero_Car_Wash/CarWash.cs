@@ -89,23 +89,25 @@ public class CarWash : IDisposable
                         }
                         break;
                 }
-            }
-            processStopwatch.Restart();
+                processStopwatch.Restart();
 
-            timingStopwatch.Stop();
-            if (carWash.Washing)
-            {
-                var toWaitMs = carWash.WorkingCycleMs - (int)timingStopwatch.ElapsedMilliseconds;
-                toWaitMs = toWaitMs < 1 ? 1 : toWaitMs;
-                try
+                timingStopwatch.Stop();
+                if (carWash.Washing)
                 {
-                    Thread.Sleep(toWaitMs);
-                }
-                catch (ThreadInterruptedException)
-                {
-                    carWash.Washing = false;
+                    var toWaitMs = carWash.WorkingCycleMs - (int)timingStopwatch.ElapsedMilliseconds;
+                    toWaitMs = toWaitMs < 1 ? 1 : toWaitMs;
+                    try
+                    {
+                        Thread.Sleep(toWaitMs);
+                    }
+                    catch (ThreadInterruptedException)
+                    {
+                        carWash.Washing = false;
+                        carWash.Dispose();
+                    }
                 }
             }
+            
         }
     }
 
@@ -168,6 +170,7 @@ public class CarWash : IDisposable
     {
         try
         {
+            Running=false;
             _thread.Interrupt();
             _thread.Join();
         }
