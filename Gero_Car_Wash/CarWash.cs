@@ -1,20 +1,15 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 namespace GeroCarWash;
 
 public class CarWash : IDisposable
 {
-    public enum Semafor
-    {
-        Red,
-        Green
-    }
-
-    public bool InputVrataOpen {  get; private set; }
-    public bool OutputVrataOpen {  get; private set; }
+    public bool InputVrataOpen { get; private set; }
+    public bool OutputVrataOpen { get; private set; }
     public Semafor InputSemafor { get; private set; }
     public Semafor OutputSemafor { get; private set; }
 
-    private int WorkingCycleMs=0;
+    private int WorkingCycleMs = 0;
     private CarWashDTO _CarWashState { get; set; }
     public CarWashDTO CarWashState { get { return _CarWashState; } private set { var changed = value != _CarWashState; _CarWashState = value; if (changed) OnCarWashStateChanged?.Invoke(this, _CarWashState); } }
 
@@ -22,10 +17,12 @@ public class CarWash : IDisposable
     public delegate void ChangedCarWashState(object sender, CarWashDTO CarWashState);
     public event ChangedCarWashState OnCarWashStateChanged;
 
-    private bool Running = false;
-    private bool Washing = false;
-    private bool Open = false;
-    private bool Finished = false;
+    private bool Running { get; set; } = false;
+    private bool Washing { get; set; } = false;
+    private bool Open { get; set; } = false;
+    private bool FinishedWashing { get; set; } = false;
+    private bool Finished { get; set; } = false;
+    private bool CarInside { get; set; } = false;
 
     private Thread _thread = new Thread(new ParameterizedThreadStart(ThreadProcedure));
 
@@ -45,67 +42,70 @@ public class CarWash : IDisposable
         {
             Stopwatch timingStopwatch = Stopwatch.StartNew();
             processStopwatch.Stop();
-            var elapsedTimeSeconds = processStopwatch.Elapsed.TotalSeconds;
-            if (elapsedTimeSeconds > 0)
+            switch (state)
             {
-                switch (state)
-                {
-                    case 0:
-                        if (carWash.Open)
-                        {
-                            carWash.InputSemafor = Semafor.Green;
-                            carWash.InputVrataOpen = true;
-                            carWash.CarWashState = UpdateDTO(carWash);
-                            state = 1;
-                        }
-                        break;
-                    case 1:
-                        if (carWash.Washing)
-                        {
-                            carWash.InputSemafor = Semafor.Red;
-                            carWash.OutputVrataOpen = false;
-                            carWash.CarWashState = UpdateDTO(carWash);
-                            state = 2;
-                        }
-                        break;
-                    case 2:
-                        if (!carWash.Washing)
-                        {
-                            carWash.OutputSemafor = Semafor.Green;
-                            carWash.OutputVrataOpen = true;
-                            carWash.Finished = true;
-                            state = 3;
-                        }
-                        break;
-                    case 3:
-                        if (!carWash.Finished)
-                        {
-                            carWash.InputSemafor = Semafor.Red;
-                            carWash.OutputSemafor = Semafor.Red;
-                            carWash.InputVrataOpen = false;
-                            carWash.OutputVrataOpen = false;
-                            carWash.Running = false;
-                            state = 0;
-                        }
-                        break;
-                }
-                processStopwatch.Restart();
+                case 0:
+                    if (carWash.Open)
+                    {
+                        carWash.InputSemafor = Semafor.Green;
+                        carWash.InputVrataOpen = true;
+                        carWash.CarWashState = UpdateDTO(carWash);
+                        state = 1;
+                    }
+                    break;
+                case 1:
+                    if (carWash.CarInside)
+                    {
+                        carWash.InputSemafor = Semafor.Red;
+                        carWash.InputVrataOpen = false;
+                        carWash.CarWashState = UpdateDTO(carWash);
+                        carWash.Washing = true;
+                        state = 2;
+                    }
+                    break;
+                case 2:
+                    if (carWash.FinishedWashing)
+                    {
+                        carWash.OutputSemafor = Semafor.Green;
+                        carWash.OutputVrataOpen = true;
+                        carWash.CarWashState = UpdateDTO(carWash);
+                        carWash.Finished = true;
+                        state = 3;
+                    }
+                    break;
+                case 3:
+                    if (!carWash.Finished)
+                    {
+                        carWash.InputSemafor = Semafor.Red;
+                        carWash.OutputSemafor = Semafor.Red;
+                        carWash.InputVrataOpen = false;
+                        carWash.OutputVrataOpen = false;
+                        carWash.CarWashState = UpdateDTO(carWash);
+                        carWash.Open = false;
+                        carWash.FinishedWashing = false;
+                        carWash.Finished = false;
+                        carWash.CarInside = false;
+                        state = 0;
+                    }
+                    break;
+            }
+            processStopwatch.Restart();
 
-                timingStopwatch.Stop();
-                if (carWash.Washing)
+            timingStopwatch.Stop();
+            if (carWash.Washing)
+            {
+                var toWaitMs = carWash.WorkingCycleMs - (int)timingStopwatch.ElapsedMilliseconds;
+                toWaitMs = toWaitMs < 1 ? 1 : toWaitMs;
+                try
                 {
-                    var toWaitMs = carWash.WorkingCycleMs - (int)timingStopwatch.ElapsedMilliseconds;
-                    toWaitMs = toWaitMs < 1 ? 1 : toWaitMs;
-                    try
-                    {
-                        Thread.Sleep(toWaitMs);
-                    }
-                    catch (ThreadInterruptedException)
-                    {
-                        carWash.Washing = false;
-                        carWash.Dispose();
-                    }
+                    Thread.Sleep(toWaitMs);
                 }
+                catch (ThreadInterruptedException)
+                {
+                    carWash.Dispose();
+                }
+                carWash.Washing = false;
+                carWash.FinishedWashing = true;
             }
             
         }
@@ -155,9 +155,13 @@ public class CarWash : IDisposable
     {
         if (!Open)
         {
-            throw new InvalidOperationException("Door is not Open");
+            throw new InvalidOperationException("Door is not open");
         }
-        Washing = true;
+        if (CarInside == true)
+        {
+            throw new InvalidOperationException("Car is already inside");
+        }
+        CarInside = true;
     }
 
     public void ChooseStyle(WashStyle style)

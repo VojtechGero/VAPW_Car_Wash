@@ -35,19 +35,23 @@
             QuickButton = new RadioButton();
             CarEntryButton = new Button();
             LeaveButton = new Button();
-            pictureBox1 = new PictureBox();
-            InDoors = new Panel();
+            Car = new PictureBox();
+            InGate = new Panel();
             OutGate = new Panel();
             InSemafor = new Panel();
             OutSemafor = new Panel();
             panel1 = new Panel();
             ErrorLabel = new Label();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            menuStrip1 = new MenuStrip();
+            modelConnectionToolStripMenuItem = new ToolStripMenuItem();
+            ConnectionLabel = new Label();
+            ((System.ComponentModel.ISupportInitialize)Car).BeginInit();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // CarHereButton
             // 
-            CarHereButton.Location = new Point(12, 16);
+            CarHereButton.Location = new Point(12, 28);
             CarHereButton.Name = "CarHereButton";
             CarHereButton.Size = new Size(75, 23);
             CarHereButton.TabIndex = 0;
@@ -58,7 +62,7 @@
             // FullButton
             // 
             FullButton.AutoSize = true;
-            FullButton.Location = new Point(107, 41);
+            FullButton.Location = new Point(107, 53);
             FullButton.Name = "FullButton";
             FullButton.Size = new Size(51, 19);
             FullButton.TabIndex = 1;
@@ -70,7 +74,7 @@
             // 
             BasicButton.AutoSize = true;
             BasicButton.Checked = true;
-            BasicButton.Location = new Point(107, 66);
+            BasicButton.Location = new Point(107, 78);
             BasicButton.Name = "BasicButton";
             BasicButton.Size = new Size(52, 19);
             BasicButton.TabIndex = 2;
@@ -82,7 +86,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(107, 20);
+            label1.Location = new Point(107, 32);
             label1.Name = "label1";
             label1.Size = new Size(63, 15);
             label1.TabIndex = 3;
@@ -91,7 +95,7 @@
             // QuickButton
             // 
             QuickButton.AutoSize = true;
-            QuickButton.Location = new Point(107, 91);
+            QuickButton.Location = new Point(107, 103);
             QuickButton.Name = "QuickButton";
             QuickButton.Size = new Size(56, 19);
             QuickButton.TabIndex = 4;
@@ -101,7 +105,7 @@
             // 
             // CarEntryButton
             // 
-            CarEntryButton.Location = new Point(201, 16);
+            CarEntryButton.Location = new Point(201, 28);
             CarEntryButton.Name = "CarEntryButton";
             CarEntryButton.Size = new Size(75, 23);
             CarEntryButton.TabIndex = 5;
@@ -111,31 +115,32 @@
             // 
             // LeaveButton
             // 
-            LeaveButton.Location = new Point(584, 16);
+            LeaveButton.Location = new Point(584, 28);
             LeaveButton.Name = "LeaveButton";
             LeaveButton.Size = new Size(75, 23);
             LeaveButton.TabIndex = 6;
             LeaveButton.Text = "Leave";
             LeaveButton.UseVisualStyleBackColor = true;
+            LeaveButton.Click += LeaveButton_Click;
             // 
-            // pictureBox1
+            // Car
             // 
-            pictureBox1.Image = Properties.Resources.SadCar;
-            pictureBox1.Location = new Point(23, 246);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(150, 130);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.TabIndex = 7;
-            pictureBox1.TabStop = false;
-            pictureBox1.Visible = false;
+            Car.Image = Properties.Resources.SadCar;
+            Car.Location = new Point(23, 246);
+            Car.Name = "Car";
+            Car.Size = new Size(150, 130);
+            Car.SizeMode = PictureBoxSizeMode.StretchImage;
+            Car.TabIndex = 7;
+            Car.TabStop = false;
+            Car.Visible = false;
             // 
-            // InDoors
+            // InGate
             // 
-            InDoors.BackColor = SystemColors.AppWorkspace;
-            InDoors.Location = new Point(286, 162);
-            InDoors.Name = "InDoors";
-            InDoors.Size = new Size(15, 212);
-            InDoors.TabIndex = 8;
+            InGate.BackColor = SystemColors.AppWorkspace;
+            InGate.Location = new Point(286, 162);
+            InGate.Name = "InGate";
+            InGate.Size = new Size(15, 212);
+            InGate.TabIndex = 8;
             // 
             // OutGate
             // 
@@ -173,25 +178,54 @@
             // 
             ErrorLabel.AutoSize = true;
             ErrorLabel.Font = new Font("Segoe UI", 12F);
-            ErrorLabel.Location = new Point(353, 20);
+            ErrorLabel.ForeColor = Color.Red;
+            ErrorLabel.Location = new Point(397, 27);
             ErrorLabel.Name = "ErrorLabel";
             ErrorLabel.Size = new Size(52, 21);
             ErrorLabel.TabIndex = 13;
             ErrorLabel.Text = "label2";
             ErrorLabel.Visible = false;
             // 
+            // menuStrip1
+            // 
+            menuStrip1.Items.AddRange(new ToolStripItem[] { modelConnectionToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(800, 24);
+            menuStrip1.TabIndex = 14;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // modelConnectionToolStripMenuItem
+            // 
+            modelConnectionToolStripMenuItem.Name = "modelConnectionToolStripMenuItem";
+            modelConnectionToolStripMenuItem.Size = new Size(116, 20);
+            modelConnectionToolStripMenuItem.Text = "Model connection";
+            modelConnectionToolStripMenuItem.Click += modelConnectionToolStripMenuItem_Click;
+            // 
+            // ConnectionLabel
+            // 
+            ConnectionLabel.AutoSize = true;
+            ConnectionLabel.Font = new Font("Segoe UI", 12F);
+            ConnectionLabel.ForeColor = Color.Black;
+            ConnectionLabel.Location = new Point(12, 162);
+            ConnectionLabel.Name = "ConnectionLabel";
+            ConnectionLabel.Size = new Size(99, 21);
+            ConnectionLabel.TabIndex = 15;
+            ConnectionLabel.Text = "Using events";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 409);
+            Controls.Add(ConnectionLabel);
             Controls.Add(ErrorLabel);
             Controls.Add(panel1);
             Controls.Add(OutSemafor);
             Controls.Add(InSemafor);
             Controls.Add(OutGate);
-            Controls.Add(InDoors);
-            Controls.Add(pictureBox1);
+            Controls.Add(InGate);
+            Controls.Add(Car);
             Controls.Add(LeaveButton);
             Controls.Add(CarEntryButton);
             Controls.Add(QuickButton);
@@ -199,10 +233,14 @@
             Controls.Add(BasicButton);
             Controls.Add(FullButton);
             Controls.Add(CarHereButton);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "Form1";
             FormClosed += Form1_FormClosed;
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)Car).EndInit();
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -216,12 +254,15 @@
         private RadioButton QuickButton;
         private Button CarEntryButton;
         private Button LeaveButton;
-        private PictureBox pictureBox1;
-        private Panel InDoors;
+        private PictureBox Car;
+        private Panel InGate;
         private Panel OutGate;
         private Panel InSemafor;
         private Panel OutSemafor;
         private Panel panel1;
         private Label ErrorLabel;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem modelConnectionToolStripMenuItem;
+        private Label ConnectionLabel;
     }
 }

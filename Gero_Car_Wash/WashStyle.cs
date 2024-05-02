@@ -1,9 +1,8 @@
-﻿namespace GeroCarWash
+﻿namespace GeroCarWash;
+
+public enum WashStyle
 {
-    public enum WashStyle
-    {
-        FULL,
-        Basic,
-        Quick
-    }
+    FULL,
+    Basic,
+    Quick
 }
